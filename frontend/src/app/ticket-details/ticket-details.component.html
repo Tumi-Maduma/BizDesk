@@ -1,0 +1,199 @@
+<div class="details-page">
+
+
+    @if (loading) {
+
+        <div class="message">
+            Loading ticket...
+        </div>
+
+    }
+
+
+    @if (errorMessage) {
+
+        <div class="error-message">
+
+            {{ errorMessage }}
+
+            <button
+                class="back-button"
+                (click)="goBack()"
+            >
+                Back to Tickets
+            </button>
+
+        </div>
+
+    }
+
+
+    @if (!loading && ticket) {
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <button
+                class="back-link"
+                (click)="goBack()"
+            >
+                ← Back to Tickets
+            </button>
+
+        </div>
+
+
+
+        <!-- TICKET HEADER -->
+
+        <div class="ticket-header-card">
+
+            <div class="ticket-heading">
+
+                <div>
+
+                    <div class="ticket-number">
+                        {{ ticket.ticket_number }}
+                    </div>
+
+                    <h2>
+                        {{ ticket.title }}
+                    </h2>
+
+                </div>
+
+
+                <span
+                    class="status"
+                    [class.open]="ticket.status === 'OPEN'"
+                    [class.assigned]="ticket.status === 'ASSIGNED'"
+                    [class.in-progress]="ticket.status === 'IN_PROGRESS'"
+                    [class.resolved]="ticket.status === 'RESOLVED'"
+                    [class.closed]="ticket.status === 'CLOSED'"
+                >
+                    {{ ticket.status }}
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MAIN CONTENT -->
+
+        <div class="details-grid">
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="description-card">
+
+                <h3>Description</h3>
+
+                <p>
+                    {{ ticket.description }}
+                </p>
+
+            </div>
+
+
+
+            <!-- INFORMATION -->
+
+            <div class="information-card">
+
+                <h3>Ticket Information</h3>
+
+
+                <div class="information-row">
+
+                    <span>Priority</span>
+
+                    <span
+                        class="priority"
+                        [class.low]="ticket.priority === 'LOW'"
+                        [class.medium]="ticket.priority === 'MEDIUM'"
+                        [class.high]="ticket.priority === 'HIGH'"
+                        [class.critical]="ticket.priority === 'CRITICAL'"
+                    >
+                        {{ ticket.priority }}
+                    </span>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Category</span>
+
+                    <strong>
+                        {{ ticket.category }}
+                    </strong>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Requester</span>
+
+                    <strong>
+                        {{ ticket.requester_name }}
+                    </strong>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Email</span>
+
+                    <strong>
+                        {{ ticket.requester_email }}
+                    </strong>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Assigned To</span>
+
+                    <strong>
+                        {{ ticket.assigned_to_name || 'Unassigned' }}
+                    </strong>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Created</span>
+
+                    <strong>
+                        {{ ticket.created_at | date:'dd MMM yyyy, HH:mm' }}
+                    </strong>
+
+                </div>
+
+
+                <div class="information-row">
+
+                    <span>Last Updated</span>
+
+                    <strong>
+                        {{ ticket.updated_at | date:'dd MMM yyyy, HH:mm' }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>

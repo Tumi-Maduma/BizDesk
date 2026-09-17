@@ -1,0 +1,109 @@
+<div class="dashboard">
+
+    <header class="topbar">
+
+        <div class="brand">
+            <div class="logo">B</div>
+
+            <div>
+                <h1>BizDesk</h1>
+                <span>IT Support Management</span>
+            </div>
+        </div>
+
+        <div class="user-section">
+
+            <div class="user-info">
+                <strong>{{ user?.full_name }}</strong>
+                <span>{{ user?.role }}</span>
+            </div>
+
+            <button (click)="logout()">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <aside class="sidebar">
+
+        <nav>
+
+            <a class="active">
+                Dashboard
+            </a>
+
+            <a>
+                Tickets
+            </a>
+
+            <a>
+                Knowledge Base
+            </a>
+
+            <a>
+                Assets
+            </a>
+
+            <a>
+                Users
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <main class="content">
+
+        <div class="welcome">
+
+            <h2>Welcome back, {{ user?.full_name }}</h2>
+
+            <p>
+                Here's what's happening with your IT support environment.
+            </p>
+
+        </div>
+
+
+        <div class="stats">
+
+            <div class="stat-card">
+                <span>Open Tickets</span>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>In Progress</span>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Resolved</span>
+                <strong>0</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Critical</span>
+                <strong>0</strong>
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h3>Recent Activity</h3>
+
+            <p>
+                No recent activity to display.
+            </p>
+
+        </div>
+
+    </main>
+
+</div>

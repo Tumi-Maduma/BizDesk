@@ -1,0 +1,345 @@
+<div class="users-page">
+
+
+    <!-- HEADER -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h2>Users</h2>
+
+            <p>
+                Manage employees, technicians and administrators.
+            </p>
+
+        </div>
+
+
+        <button
+            class="create-button"
+            (click)="openCreateForm()"
+        >
+            + Add User
+        </button>
+
+    </div>
+
+
+
+    <!-- SUCCESS -->
+
+    @if (successMessage) {
+
+        <div class="success-message">
+            {{ successMessage }}
+        </div>
+
+    }
+
+
+
+    <!-- ERROR -->
+
+    @if (errorMessage) {
+
+        <div class="error-message">
+            {{ errorMessage }}
+        </div>
+
+    }
+
+
+
+    <!-- CREATE USER FORM -->
+
+    @if (showCreateForm) {
+
+        <div class="form-card">
+
+
+            <div class="form-header">
+
+                <div>
+
+                    <h3>Add New User</h3>
+
+                    <p>
+                        Create a new BizDesk user account.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="close-button"
+                    (click)="closeCreateForm()"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form
+                (ngSubmit)="createUser()"
+            >
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label for="fullName">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        [(ngModel)]="fullName"
+                        placeholder="Enter full name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        [(ngModel)]="email"
+                        placeholder="Enter email address"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Temporary Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        [(ngModel)]="password"
+                        placeholder="Enter temporary password"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- ROLE -->
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Role
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        [(ngModel)]="role"
+                    >
+
+                        <option value="EMPLOYEE">
+                            Employee
+                        </option>
+
+                        <option value="TECHNICIAN">
+                            Technician
+                        </option>
+
+                        <option value="ADMIN">
+                            Administrator
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- DEPARTMENT -->
+
+                <div class="form-group">
+
+                    <label for="department">
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        id="department"
+                        name="department"
+                        [(ngModel)]="department"
+                        placeholder="e.g. Finance, HR, IT"
+                    >
+
+                </div>
+
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="cancel-button"
+                        (click)="closeCreateForm()"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="submit-button"
+                        [disabled]="creatingUser"
+                    >
+
+                        @if (creatingUser) {
+
+                            Creating...
+
+                        } @else {
+
+                            Create User
+
+                        }
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    }
+
+
+
+    <!-- LOADING -->
+
+    @if (loading) {
+
+        <div class="message">
+            Loading users...
+        </div>
+
+    }
+
+
+
+    <!-- USERS TABLE -->
+
+    @if (!loading && users.length > 0) {
+
+        <div class="users-card">
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Name</th>
+
+                            <th>Email</th>
+
+                            <th>Role</th>
+
+                            <th>Department</th>
+
+                            <th>Created</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @for (
+                            user of users;
+                            track user.id
+                        ) {
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        {{ user.full_name }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ user.email }}
+                                </td>
+
+                                <td>
+
+                                    <span
+                                        class="role"
+                                        [class.admin]="user.role === 'ADMIN'"
+                                        [class.technician]="user.role === 'TECHNICIAN'"
+                                        [class.employee]="user.role === 'EMPLOYEE'"
+                                    >
+                                        {{ user.role }}
+                                    </span>
+
+                                </td>
+
+                                <td>
+                                    {{ user.department || '—' }}
+                                </td>
+
+                                <td>
+                                    {{
+                                        user.created_at
+                                        | date:'dd MMM yyyy'
+                                    }}
+                                </td>
+
+                            </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>
