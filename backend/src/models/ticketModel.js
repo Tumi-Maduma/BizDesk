@@ -254,9 +254,94 @@ const getTicketById = async (id, user) => {
     return result.rows[0];
 };
 
+const getTechnicianById = async (technicianId) => {
+
+    const result = await pool.query(`
+        SELECT
+            id,
+            full_name,
+            email,
+            department
+        FROM users
+        WHERE id = $1
+        AND role = 'TECHNICIAN'
+    `, [technicianId]);
+
+    return result.rows[0];
+};
+
+const assignTicket = async (
+    ticketId,
+    technicianId
+) => {
+
+    const result = await pool.query(`
+        UPDATE tickets
+        SET
+            assigned_to = $1,
+            status = 'ASSIGNED',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = $2
+
+        RETURNING
+            id,
+            ticket_number,
+            title,
+            description,
+            category,
+            priority,
+            status,
+            requester_id,
+            assigned_to,
+            created_at,
+            updated_at
+    `, [
+        technicianId,
+        ticketId
+    ]);
+
+    return result.rows[0];
+};
+const updateTicketStatus = async (
+    ticketId,
+    status
+) => {
+
+    const result = await pool.query(`
+        UPDATE tickets
+
+        SET
+            status = $1,
+            updated_at = CURRENT_TIMESTAMP
+
+        WHERE id = $2
+
+        RETURNING
+            id,
+            ticket_number,
+            title,
+            description,
+            category,
+            priority,
+            status,
+            requester_id,
+            assigned_to,
+            created_at,
+            updated_at
+    `, [
+        status,
+        ticketId
+    ]);
+
+    return result.rows[0];
+};
+
 
 module.exports = {
     getAllTickets,
     createTicket,
-    getTicketById
+    getTicketById,
+    getTechnicianById,
+    assignTicket,
+    updateTicketStatus
 };

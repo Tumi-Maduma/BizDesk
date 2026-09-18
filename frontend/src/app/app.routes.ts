@@ -8,6 +8,7 @@ import { TicketsComponent } from './tickets/tickets.component';
 import { TicketDetailsComponent } from './ticket-details/ticket-details.component';
 import { UsersComponent } from './users/users.component';
 import { adminGuard } from './guards/admin.guard';
+import { KnowledgeBaseComponent } from './knowledge-base/knowledge-base.component';
 
 export const routes: Routes = [
 
@@ -37,6 +38,12 @@ export const routes: Routes = [
     {
         path: 'tickets/:id',
         component: TicketDetailsComponent,
+        canActivate: [authGuard]
+    },
+
+    {
+        path: 'knowledge-base',
+        component: KnowledgeBaseComponent,
         canActivate: [authGuard]
     },
 

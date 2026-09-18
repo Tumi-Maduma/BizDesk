@@ -1,8 +1,10 @@
 const pool = require('../config/db');
 
+
 const getAllUsers = async () => {
+
     const result = await pool.query(`
-        SELECT 
+        SELECT
             id,
             full_name,
             email,
@@ -16,7 +18,15 @@ const getAllUsers = async () => {
     return result.rows;
 };
 
-const createUser = async (fullName, email, password, role, department) => {
+
+const createUser = async (
+    fullName,
+    email,
+    password,
+    role,
+    department
+) => {
+
     const result = await pool.query(`
         INSERT INTO users (
             full_name,
@@ -26,19 +36,27 @@ const createUser = async (fullName, email, password, role, department) => {
             department
         )
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING 
+        RETURNING
             id,
             full_name,
             email,
             role,
             department,
             created_at
-    `, [fullName, email, password, role, department]);
+    `, [
+        fullName,
+        email,
+        password,
+        role,
+        department
+    ]);
 
     return result.rows[0];
 };
 
+
 const getUserByEmail = async (email) => {
+
     const result = await pool.query(`
         SELECT
             id,
@@ -55,8 +73,27 @@ const getUserByEmail = async (email) => {
     return result.rows[0];
 };
 
+
+const getTechnicians = async () => {
+
+    const result = await pool.query(`
+        SELECT
+            id,
+            full_name,
+            email,
+            department
+        FROM users
+        WHERE role = 'TECHNICIAN'
+        ORDER BY full_name
+    `);
+
+    return result.rows;
+};
+
+
 module.exports = {
     getAllUsers,
     createUser,
-    getUserByEmail
+    getUserByEmail,
+    getTechnicians
 };

@@ -1,0 +1,602 @@
+<div class="knowledge-page">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+
+        <div>
+
+            <h2>
+                Knowledge Base
+            </h2>
+
+            <p>
+                Find helpful information and solutions
+                to common IT problems.
+            </p>
+
+        </div>
+
+
+        @if (isAdmin()) {
+
+            <button
+                type="button"
+                class="create-button"
+                (click)="openCreateForm()">
+
+                <i class="fa-solid fa-plus"></i>
+
+                Create Article
+
+            </button>
+
+        }
+
+    </div>
+
+    @if (editingArticle) {
+
+        <div class="create-card">
+
+            <div class="create-header">
+
+                <h3>
+                    Edit Knowledge Base Article
+                </h3>
+
+                <p>
+                    Update the article information below.
+                </p>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="editTitle">
+                    Article Title
+                </label>
+
+                <input
+                    id="editTitle"
+                    type="text"
+                    [(ngModel)]="editTitle"
+                    placeholder="Enter article title">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="editCategory">
+                    Category
+                </label>
+
+                <select
+                    id="editCategory"
+                    [(ngModel)]="editCategory">
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    @for (
+                        category of categories;
+                        track category.id
+                    ) {
+
+                        <option
+                            [value]="category.id">
+
+                            {{ category.name }}
+
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="editContent">
+                    Article Content
+                </label>
+
+                <textarea
+                    id="editContent"
+                    rows="8"
+                    [(ngModel)]="editContent"
+                    placeholder="Write the article content here...">
+                </textarea>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    (click)="cancelEditing()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="save-button"
+                    [disabled]="updatingArticle"
+                    (click)="updateArticle()">
+
+                    @if (updatingArticle) {
+
+                        Updating...
+
+                    } @else {
+
+                        Save Changes
+
+                    }
+
+                </button>
+
+            </div>
+
+        </div>
+
+    }
+
+    @if (showCreateForm) {
+
+        <div class="create-card">
+
+            <div class="create-header">
+
+                <div>
+
+                    <h3>
+                        Create Knowledge Base Article
+                    </h3>
+
+                    <p>
+                        Add an article that can help users
+                        solve common problems.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="articleTitle">
+                    Article Title
+                </label>
+
+                <input
+                    id="articleTitle"
+                    type="text"
+                    [(ngModel)]="articleTitle"
+                    placeholder="Enter article title">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="articleCategory">
+                    Category
+                </label>
+
+                <select
+                    id="articleCategory"
+                    [(ngModel)]="articleCategory">
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    @for (
+                        category of categories;
+                        track category.id
+                    ) {
+
+                        <option
+                            [value]="category.id">
+
+                            {{ category.name }}
+
+                        </option>
+
+                    }
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="articleContent">
+                    Article Content
+                </label>
+
+                <textarea
+                    id="articleContent"
+                    [(ngModel)]="articleContent"
+                    rows="8"
+                    placeholder="Write the article content here...">
+                </textarea>
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    (click)="closeCreateForm()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="save-button"
+                    [disabled]="creatingArticle"
+                    (click)="createArticle()">
+
+                    @if (creatingArticle) {
+
+                        Creating...
+
+                    } @else {
+
+                        Create Article
+
+                    }
+
+                </button>
+
+            </div>
+
+        </div>
+
+    }
+
+
+    <!-- ARTICLE DETAILS -->
+    @if (selectedArticle) {
+
+        <div class="article-details">
+
+            <button
+                type="button"
+                class="back-button"
+                (click)="closeArticle()">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Back to Knowledge Base
+
+            </button>
+
+
+            <div class="article-card">
+
+                <div class="article-header">
+
+                    <div>
+
+                        <span class="category-badge">
+
+                            {{ selectedArticle.category_name }}
+
+                        </span>
+
+                        <h1>
+                            {{ selectedArticle.title }}
+                        </h1>
+
+                    </div>
+
+                </div>
+
+
+                <div class="article-content">
+
+                    {{ selectedArticle.content }}
+
+                </div>
+
+
+                <div class="article-footer">
+
+                    <span>
+                        Created by
+                        <strong>
+                            {{ selectedArticle.created_by_name }}
+                        </strong>
+                    </span>
+
+                    <span>
+                        {{ selectedArticle.created_at
+                            | date:'dd MMM yyyy' }}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    }
+
+
+    <!-- KNOWLEDGE BASE LIST -->
+    @if (!selectedArticle) {
+
+        <!-- FILTERS -->
+        <div class="filter-card">
+
+            <div class="filter-header">
+
+                <h3>Find an Article</h3>
+
+                <p>
+                    Search the Knowledge Base for
+                    information and troubleshooting guides.
+                </p>
+
+            </div>
+
+
+            <div class="filters">
+
+                <div class="filter-group search-group">
+
+                    <label for="search">
+                        Search
+                    </label>
+
+                    <input
+                        id="search"
+                        type="text"
+                        placeholder="Search articles..."
+                        [(ngModel)]="searchTerm"
+                        (input)="filterArticles()">
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select
+                        id="category"
+                        [(ngModel)]="categoryFilter"
+                        (change)="filterArticles()">
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        @for (
+                            category of categories;
+                            track category.id
+                        ) {
+
+                            <option
+                                [value]="category.id">
+
+                                {{ category.name }}
+
+                            </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-actions">
+
+                    <button
+                        type="button"
+                        class="clear-filter-button"
+                        (click)="clearFilters()">
+
+                        Clear Filters
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ERROR -->
+        @if (errorMessage) {
+
+            <div class="message error">
+                {{ errorMessage }}
+            </div>
+
+        }
+
+
+        <!-- LOADING -->
+        @if (loading) {
+
+            <div class="loading">
+                Loading Knowledge Base...
+            </div>
+
+        }
+
+
+        <!-- RESULT COUNT -->
+        @if (!loading && !errorMessage) {
+
+            <div class="result-count">
+
+                Showing
+                <strong>
+                    {{ filteredArticles.length }}
+                </strong>
+
+                of
+
+                <strong>
+                    {{ articles.length }}
+                </strong>
+
+                articles
+
+            </div>
+
+        }
+
+
+        <!-- EMPTY -->
+        @if (
+            !loading &&
+            !errorMessage &&
+            filteredArticles.length === 0
+        ) {
+
+            <div class="empty-state">
+
+                <i class="fa-solid fa-book-open"></i>
+
+                <h3>
+                    No articles found
+                </h3>
+
+                <p>
+                    Try changing your search or
+                    category filter.
+                </p>
+
+            </div>
+
+        }
+
+
+        <!-- ARTICLES -->
+        @if (
+            !loading &&
+            !errorMessage &&
+            filteredArticles.length > 0
+        ) {
+
+            <div class="articles-grid">
+
+                @for (
+                    article of filteredArticles;
+                    track article.id
+                ) {
+
+                    <div class="article-preview">
+
+                        <div class="article-icon">
+
+                            <i class="fa-solid fa-book"></i>
+
+                        </div>
+
+
+                        <div class="article-info">
+
+                            <span class="category-badge">
+
+                                {{ article.category_name }}
+
+                            </span>
+
+                            <h3>
+                                {{ article.title }}
+                            </h3>
+
+                            <p>
+                                {{ article.content }}
+                            </p>
+
+                            <div class="article-meta">
+
+                                <span>
+                                    <i class="fa-solid fa-user"></i>
+
+                                    {{ article.created_by_name }}
+
+                                </span>
+
+                                <span>
+                                    {{ article.created_at
+                                        | date:'dd MMM yyyy' }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="article-actions">
+
+                            <button
+                                type="button"
+                                class="view-button"
+                                (click)="viewArticle(article)">
+                                Read Article
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+
+                            @if (isAdmin()) {
+
+                                <button
+                                    type="button"
+                                    class="edit-button"
+                                    (click)="startEditing(article)">
+                                    <i class="fa-solid fa-pen"></i>
+                                    Edit
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="delete-button"
+                                    (click)="deleteArticle(article)"
+                                    [disabled]="deletingArticle">
+                                    <i class="fa-solid fa-trash"></i>
+                                    Delete
+                                </button>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+                }
+
+            </div>
+
+        }
+
+    }
+
+</div>

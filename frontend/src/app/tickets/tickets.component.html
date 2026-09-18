@@ -25,7 +25,182 @@
 
     </div>
 
+    <!-- FILTERS -->
 
+    <div class="filter-card">
+
+        <div class="filter-header">
+
+            <div>
+
+                <h3>Find Tickets</h3>
+
+                <p>
+                    Search and filter your support requests.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="filters">
+
+            <!-- SEARCH -->
+
+            <div class="filter-group search-group">
+
+                <label for="search">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    [(ngModel)]="searchTerm"
+                    (ngModelChange)="filterTickets()"
+                    placeholder="Search by ticket number or title"
+                >
+
+            </div>
+
+
+            <!-- STATUS -->
+
+            <div class="filter-group">
+
+                <label for="statusFilter">
+                    Status
+                </label>
+
+                <select
+                    id="statusFilter"
+                    name="statusFilter"
+                    [(ngModel)]="statusFilter"
+                    (ngModelChange)="filterTickets()"
+                >
+
+                    <option value="">
+                        All Statuses
+                    </option>
+
+                    <option value="OPEN">
+                        Open
+                    </option>
+
+                    <option value="ASSIGNED">
+                        Assigned
+                    </option>
+
+                    <option value="IN_PROGRESS">
+                        In Progress
+                    </option>
+
+                    <option value="RESOLVED">
+                        Resolved
+                    </option>
+
+                    <option value="CLOSED">
+                        Closed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- PRIORITY -->
+
+            <div class="filter-group">
+
+                <label for="priorityFilter">
+                    Priority
+                </label>
+
+                <select
+                    id="priorityFilter"
+                    name="priorityFilter"
+                    [(ngModel)]="priorityFilter"
+                    (ngModelChange)="filterTickets()"
+                >
+
+                    <option value="">
+                        All Priorities
+                    </option>
+
+                    <option value="LOW">
+                        Low
+                    </option>
+
+                    <option value="MEDIUM">
+                        Medium
+                    </option>
+
+                    <option value="HIGH">
+                        High
+                    </option>
+
+                    <option value="CRITICAL">
+                        Critical
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- SORT -->
+
+            <div class="filter-group">
+
+                <label for="sortOption">
+                    Sort By
+                </label>
+
+                <select
+                    id="sortOption"
+                    name="sortOption"
+                    [(ngModel)]="sortOption"
+                    (ngModelChange)="sortTickets()"
+                >
+
+                    <option value="newest">
+                        Newest First
+                    </option>
+
+                    <option value="oldest">
+                        Oldest First
+                    </option>
+
+                    <option value="priority">
+                        Priority
+                    </option>
+
+                    <option value="status">
+                        Status
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- CLEAR -->
+
+            <div class="filter-actions">
+
+                <button
+                    type="button"
+                    class="clear-filter-button"
+                    (click)="clearFilters()"
+                >
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <!-- SUCCESS MESSAGE -->
 
@@ -275,7 +450,7 @@
 
     <!-- EMPTY STATE -->
 
-    @if (!loading && tickets.length === 0) {
+    @if (!loading && filteredTickets.length === 0) {
 
         <div class="empty-state">
 
@@ -286,7 +461,7 @@
             <h3>No tickets found</h3>
 
             <p>
-                You currently don't have any support tickets.
+                No tickets match your current search or filters.
             </p>
 
         </div>
@@ -297,9 +472,19 @@
 
     <!-- TICKET TABLE -->
 
-    @if (!loading && tickets.length > 0) {
+    @if (!loading && filteredTickets.length > 0) {
 
         <div class="ticket-card">
+
+            <div class="result-count">
+
+                Showing
+                <strong>{{ filteredTickets.length }}</strong>
+                of
+                <strong>{{ tickets.length }}</strong>
+                tickets
+
+            </div>
 
             <div class="table-container">
 
@@ -331,7 +516,7 @@
                     <tbody>
 
                         @for (
-                            ticket of tickets;
+                            ticket of filteredTickets;
                             track ticket.id
                         ) {
 

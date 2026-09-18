@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UserService {
 
-    private apiUrl = 'http://localhost:3000/api/users';
+    private apiUrl =
+        'http://localhost:3000/api/users';
 
 
     constructor(
@@ -28,6 +29,15 @@ export class UserService {
         return this.http.post<any>(
             this.apiUrl,
             user
+        );
+
+    }
+
+
+    getTechnicians() {
+
+        return this.http.get<any[]>(
+            `${this.apiUrl}/technicians`
         );
 
     }

@@ -393,3 +393,194 @@ td strong {
 .ticket-number-button:hover {
     text-decoration: underline;
 }
+
+/* =========================
+   FILTERS
+========================= */
+
+.filter-card {
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+}
+
+.filter-header {
+    margin-bottom: 20px;
+}
+
+.filter-header h3 {
+    margin: 0 0 5px;
+
+    color: #111827;
+
+    font-size: 18px;
+}
+
+.filter-header p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+.filters {
+    display: grid;
+
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+
+    gap: 15px;
+
+    align-items: end;
+}
+
+
+.filter-group {
+    min-width: 0;
+}
+
+.filter-group label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #374151;
+
+    font-size: 13px;
+
+    font-weight: 600;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 11px 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    background: white;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: #2563eb;
+}
+
+
+.filter-actions {
+    display: flex;
+
+    align-items: center;
+}
+
+
+.clear-filter-button {
+    padding: 11px 16px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 7px;
+
+    background: white;
+
+    color: #374151;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+}
+
+.clear-filter-button:hover {
+    background: #f9fafb;
+}
+
+
+/* =========================
+   RESULT COUNT
+========================= */
+
+.result-count {
+    padding: 15px 18px;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+.result-count strong {
+    color: #111827;
+}
+
+
+/* =========================
+   RESPONSIVE FILTERS
+========================= */
+
+@media (max-width: 900px) {
+
+    .filters {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-group {
+        grid-column: 1 / -1;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .tickets-page {
+        padding: 20px;
+    }
+
+    .page-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .search-group {
+        grid-column: auto;
+    }
+
+    .filter-actions {
+        width: 100%;
+    }
+
+    .clear-filter-button {
+        width: 100%;
+    }
+
+}

@@ -3,22 +3,43 @@
     <header class="topbar">
 
         <div class="brand">
-            <div class="logo">B</div>
+
+            <div class="logo">
+                B
+            </div>
 
             <div>
+
                 <h1>BizDesk</h1>
-                <span>IT Support Management</span>
+
+                <span>
+                    IT Support Management
+                </span>
+
             </div>
+
         </div>
+
 
         <div class="user-section">
 
             <div class="user-info">
-                <strong>{{ user?.full_name }}</strong>
-                <span>{{ user?.role }}</span>
+
+                <strong>
+                    {{ user?.full_name }}
+                </strong>
+
+                <span>
+                    {{ user?.role }}
+                </span>
+
             </div>
 
-            <button (click)="logout()">
+
+            <button
+                type="button"
+                (click)="logout()"
+            >
                 Logout
             </button>
 
@@ -31,15 +52,24 @@
 
         <nav>
 
-            <a class="active">
+            <a
+                routerLink="/dashboard"
+                routerLinkActive="active"
+            >
                 Dashboard
             </a>
 
-            <a>
+            <a
+                routerLink="/tickets"
+                routerLinkActive="active"
+            >
                 Tickets
             </a>
 
-            <a>
+            <a
+                routerLink="/knowledge-base"
+                routerLinkActive="active"
+            >
                 Knowledge Base
             </a>
 
@@ -47,7 +77,10 @@
                 Assets
             </a>
 
-            <a>
+            <a
+                routerLink="/users"
+                routerLinkActive="active"
+            >
                 Users
             </a>
 
@@ -60,7 +93,9 @@
 
         <div class="welcome">
 
-            <h2>Welcome back, {{ user?.full_name }}</h2>
+            <h2>
+                Welcome back, {{ user?.full_name }}
+            </h2>
 
             <p>
                 Here's what's happening with your IT support environment.
@@ -69,34 +104,196 @@
         </div>
 
 
-        <div class="stats">
+        <!-- Loading -->
+
+        <div
+            class="dashboard-message"
+            *ngIf="loading"
+        >
+
+            Loading dashboard statistics...
+
+        </div>
+
+
+        <!-- Error -->
+
+        <div
+            class="dashboard-error"
+            *ngIf="errorMessage"
+        >
+
+            {{ errorMessage }}
+
+        </div>
+
+
+        <!-- Statistics -->
+
+        <div
+            class="stats"
+            *ngIf="!loading && statistics"
+        >
 
             <div class="stat-card">
-                <span>Open Tickets</span>
-                <strong>0</strong>
+
+                <span>
+                    Open Tickets
+                </span>
+
+                <strong>
+                    {{ statistics.open }}
+                </strong>
+
             </div>
 
-            <div class="stat-card">
-                <span>In Progress</span>
-                <strong>0</strong>
-            </div>
 
             <div class="stat-card">
-                <span>Resolved</span>
-                <strong>0</strong>
+
+                <span>
+                    In Progress
+                </span>
+
+                <strong>
+                    {{ statistics.in_progress }}
+                </strong>
+
             </div>
 
+
             <div class="stat-card">
-                <span>Critical</span>
-                <strong>0</strong>
+
+                <span>
+                    Resolved
+                </span>
+
+                <strong>
+                    {{ statistics.resolved }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Closed
+                </span>
+
+                <strong>
+                    {{ statistics.closed }}
+                </strong>
+
             </div>
 
         </div>
 
 
+        <!-- Total and Assigned -->
+
+        <div
+            class="stats secondary-stats"
+            *ngIf="!loading && statistics"
+        >
+
+            <div class="stat-card">
+
+                <span>
+                    Total Tickets
+                </span>
+
+                <strong>
+                    {{ statistics.total }}
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>
+                    Assigned
+                </span>
+
+                <strong>
+                    {{ statistics.assigned }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        <div
+            class="dashboard-card priority-card"
+            *ngIf="!loading && statistics"
+        >
+
+            <h3>
+                Ticket Priority
+            </h3>
+
+
+            <div class="priority-grid">
+
+                <div class="priority-item">
+
+                    <span>
+                        Low
+                    </span>
+
+                    <strong>
+                        {{ statistics.low }}
+                    </strong>
+
+                </div>
+
+
+                <div class="priority-item">
+
+                    <span>
+                        Medium
+                    </span>
+
+                    <strong>
+                        {{ statistics.medium }}
+                    </strong>
+
+                </div>
+
+
+                <div class="priority-item">
+
+                    <span>
+                        High
+                    </span>
+
+                    <strong>
+                        {{ statistics.high }}
+                    </strong>
+
+                </div>
+
+
+                <div class="priority-item">
+
+                    <span>
+                        Critical
+                    </span>
+
+                    <strong>
+                        {{ statistics.critical }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
         <div class="dashboard-card">
 
-            <h3>Recent Activity</h3>
+            <h3>
+                Recent Activity
+            </h3>
 
             <p>
                 No recent activity to display.

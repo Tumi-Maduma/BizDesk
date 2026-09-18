@@ -18,6 +18,8 @@ export class TicketsComponent implements OnInit {
 
     tickets: any[] = [];
 
+    filteredTickets: any[] = [];
+
     loading = true;
 
     errorMessage = '';
@@ -37,6 +39,18 @@ export class TicketsComponent implements OnInit {
 
     priority = 'MEDIUM';
 
+
+    // =========================
+    // FILTERS
+    // =========================
+
+    searchTerm = '';
+
+    statusFilter = '';
+
+    priorityFilter = '';
+
+    sortOption = 'newest';
 
     constructor(
         private ticketService: TicketService,
@@ -62,6 +76,11 @@ export class TicketsComponent implements OnInit {
 
                     this.tickets = response;
 
+                    this.filteredTickets =
+                        [...this.tickets];
+
+                    this.sortTickets();
+
                     this.loading = false;
 
                 },
@@ -81,6 +100,147 @@ export class TicketsComponent implements OnInit {
                 }
 
             });
+
+    }
+
+
+    // =========================
+    // FILTER TICKETS
+    // =========================
+
+    filterTickets(): void {
+
+        const search =
+            this.searchTerm
+                .trim()
+                .toLowerCase();
+
+
+        this.filteredTickets =
+            this.tickets.filter(ticket => {
+
+                const matchesSearch =
+                    !search ||
+                    ticket.ticket_number
+                        ?.toLowerCase()
+                        .includes(search) ||
+                    ticket.title
+                        ?.toLowerCase()
+                        .includes(search);
+
+
+                const matchesStatus =
+                    !this.statusFilter ||
+                    ticket.status === this.statusFilter;
+
+
+                const matchesPriority =
+                    !this.priorityFilter ||
+                    ticket.priority === this.priorityFilter;
+
+
+                return (
+                    matchesSearch &&
+                    matchesStatus &&
+                    matchesPriority
+                );
+
+            });
+
+
+        this.sortTickets();
+
+    }
+
+    sortTickets(): void {
+
+        const priorityOrder: any = {
+
+            CRITICAL: 1,
+
+            HIGH: 2,
+
+            MEDIUM: 3,
+
+            LOW: 4
+
+        };
+
+
+        const statusOrder: any = {
+
+            OPEN: 1,
+
+            ASSIGNED: 2,
+
+            IN_PROGRESS: 3,
+
+            RESOLVED: 4,
+
+            CLOSED: 5
+
+        };
+
+
+        this.filteredTickets.sort(
+            (a, b) => {
+
+                switch (this.sortOption) {
+
+                    case 'oldest':
+
+                        return (
+                            new Date(a.created_at).getTime() -
+                            new Date(b.created_at).getTime()
+                        );
+
+
+                    case 'priority':
+
+                        return (
+                            priorityOrder[a.priority] -
+                            priorityOrder[b.priority]
+                        );
+
+
+                    case 'status':
+
+                        return (
+                            statusOrder[a.status] -
+                            statusOrder[b.status]
+                        );
+
+
+                    case 'newest':
+
+                    default:
+
+                        return (
+                            new Date(b.created_at).getTime() -
+                            new Date(a.created_at).getTime()
+                        );
+
+                }
+
+            }
+        );
+
+    }
+
+    clearFilters(): void {
+
+        this.searchTerm = '';
+
+        this.statusFilter = '';
+
+        this.priorityFilter = '';
+
+        this.sortOption = 'newest';
+
+        this.filteredTickets =
+            [...this.tickets];
+
+        this.sortTickets();
 
     }
 
@@ -208,6 +368,7 @@ export class TicketsComponent implements OnInit {
         this.successMessage = '';
 
     }
+
 
     viewTicket(id: number): void {
 

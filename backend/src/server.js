@@ -5,6 +5,9 @@ const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 
+const dashboardRoutes = require('./routes/dashboardRoutes');
+const knowledgeBaseRoutes = require('./routes/knowledgeBaseRoutes');
+
 const app = express();
 
 const PORT = 3000;
@@ -28,6 +31,9 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/tickets', ticketRoutes);
 
+app.use('/api/dashboard', dashboardRoutes);
+
+app.use('/api/knowledge', knowledgeBaseRoutes);
 
 app.listen(PORT, () => {
 
