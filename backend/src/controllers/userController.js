@@ -110,6 +110,28 @@ const getTechnicians = async (req, res) => {
 
 };
 
+const getUsersForAssets = async (req, res) => {
+
+    try {
+
+        const users =
+            await userModel.getUsersForAssets();
+
+        res.json(users);
+
+    } catch (error) {
+
+        console.error(
+            'Error retrieving users for assets:',
+            error
+        );
+
+        res.status(500).json({
+            message:
+                'Failed to retrieve users for assets'
+        });
+    }
+};
 
 module.exports = {
 
@@ -117,6 +139,8 @@ module.exports = {
 
     createUser,
 
-    getTechnicians
+    getTechnicians,
+
+    getUsersForAssets
 
 };

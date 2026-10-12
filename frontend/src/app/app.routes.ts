@@ -9,6 +9,7 @@ import { TicketDetailsComponent } from './ticket-details/ticket-details.componen
 import { UsersComponent } from './users/users.component';
 import { adminGuard } from './guards/admin.guard';
 import { KnowledgeBaseComponent } from './knowledge-base/knowledge-base.component';
+import { AssetsComponent } from './assets/assets';
 
 export const routes: Routes = [
 
@@ -48,6 +49,12 @@ export const routes: Routes = [
     },
 
     {
+        path: 'assets',
+        component: AssetsComponent,
+        canActivate: [authGuard]
+    },
+
+    {
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'
@@ -57,5 +64,7 @@ export const routes: Routes = [
         path: '**',
         redirectTo: 'login'
     }
+
+    
 
 ];

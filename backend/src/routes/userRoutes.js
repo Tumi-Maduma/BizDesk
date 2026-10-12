@@ -35,5 +35,10 @@ router.get(
     userController.getTechnicians
 );
 
+router.get(
+    '/asset-users',
+    authenticateToken,
+    userController.getUsersForAssets
+);
 
 module.exports = router;

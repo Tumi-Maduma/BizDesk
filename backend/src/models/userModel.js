@@ -90,10 +90,26 @@ const getTechnicians = async () => {
     return result.rows;
 };
 
+const getUsersForAssets = async () => {
+
+    const result = await pool.query(`
+        SELECT
+            id,
+            full_name,
+            email,
+            department,
+            role
+        FROM users
+        ORDER BY full_name
+    `);
+
+    return result.rows;
+};
 
 module.exports = {
     getAllUsers,
     createUser,
     getUserByEmail,
-    getTechnicians
+    getTechnicians,
+    getUsersForAssets
 };

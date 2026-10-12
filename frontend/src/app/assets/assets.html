@@ -1,0 +1,879 @@
+<div class="assets-page">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Assets</h1>
+
+            <p>
+                Manage and track company assets.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="add-button"
+            (click)="openAddForm()">
+
+            <i class="fa-solid fa-plus"></i>
+
+            Add Asset
+
+        </button>
+
+    </div>
+
+
+    @if (loading) {
+
+        <div class="message">
+            Loading assets...
+        </div>
+
+    }
+
+
+    @if (errorMessage) {
+
+        <div class="error-message">
+            {{ errorMessage }}
+        </div>
+
+    }
+
+
+    @if (!loading && !errorMessage) {
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Asset Tag</th>
+
+                        <th>Asset</th>
+
+                        <th>Type</th>
+
+                        <th>Brand / Model</th>
+
+                        <th>Status</th>
+
+                        <th>Assigned To</th>
+
+                        <th>Department</th>
+
+                        <th>Actions</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @for (asset of assets; track asset.id) {
+
+                        <tr>
+
+                            <td>
+                                <span class="asset-tag">
+                                    {{ asset.asset_tag }}
+                                </span>
+                            </td>
+
+
+                            <td>
+
+                                <div class="asset-name">
+                                    {{ asset.name }}
+                                </div>
+
+                                @if (asset.serial_number) {
+
+                                    <div class="serial-number">
+                                        S/N:
+                                        {{ asset.serial_number }}
+                                    </div>
+
+                                }
+
+                            </td>
+
+
+                            <td>
+                                {{ asset.asset_type }}
+                            </td>
+
+
+                            <td>
+
+                                @if (asset.brand || asset.model) {
+
+                                    {{ asset.brand }}
+
+                                    @if (asset.brand && asset.model) {
+                                        /
+                                    }
+
+                                    {{ asset.model }}
+
+                                } @else {
+
+                                    <span class="muted">
+                                        Not specified
+                                    </span>
+
+                                }
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="status"
+                                    [class.available]="asset.status === 'AVAILABLE'"
+                                    [class.assigned]="asset.status === 'ASSIGNED'"
+                                    [class.maintenance]="asset.status === 'MAINTENANCE'"
+                                    [class.retired]="asset.status === 'RETIRED'"
+                                    [class.lost]="asset.status === 'LOST'">
+
+                                    {{ asset.status }}
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                @if (asset.assigned_to_name) {
+
+                                    {{ asset.assigned_to_name }}
+
+                                } @else {
+
+                                    <span class="muted">
+                                        Unassigned
+                                    </span>
+
+                                }
+
+                            </td>
+
+
+                            <td>
+                                {{ asset.department || '—' }}
+                            </td>
+
+                            <td>
+
+                            <div class="action-buttons">
+
+                                <button
+                                    type="button"
+                                    class="action-button"
+                                    (click)="openEditForm(asset)">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                    Edit
+
+                                </button>
+
+
+                                @if (asset.assigned_to) {
+
+                                    <button
+                                        type="button"
+                                        class="action-button"
+                                        (click)="openAssignForm(asset)">
+
+                                        <i class="fa-solid fa-user-pen"></i>
+
+                                        Reassign
+
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="action-button danger"
+                                        (click)="unassignAsset(asset)">
+
+                                        <i class="fa-solid fa-user-minus"></i>
+
+                                        Unassign
+
+                                    </button>
+
+                                } @else {
+
+                                    <button
+                                        type="button"
+                                        class="action-button"
+                                        (click)="openAssignForm(asset)">
+
+                                        <i class="fa-solid fa-user-plus"></i>
+
+                                        Assign
+
+                                    </button>
+
+                                }
+
+                                <button
+                                    type="button"
+                                    class="action-button danger"
+                                    (click)="deleteAsset(asset)">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                        </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+
+            @if (assets.length === 0) {
+
+                <div class="empty-state">
+
+                    <i class="fa-solid fa-box-open"></i>
+
+                    <h3>No assets found</h3>
+
+                    <p>
+                        There are currently no assets
+                        registered in BizDesk.
+                    </p>
+
+                </div>
+
+            }
+
+        </div>
+
+    }
+
+    @if (showAddForm) {
+
+        <div class="form-overlay">
+
+            <div class="asset-form">
+
+                <div class="form-header">
+
+                    <div>
+                        <h2>Add Asset</h2>
+
+                        <p>
+                            Register a new company asset.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="close-button"
+                        (click)="closeAddForm()">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                <form (ngSubmit)="saveAsset()">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="name">
+                                Asset Name
+                            </label>
+
+                            <input
+                                id="name"
+                                type="text"
+                                [(ngModel)]="assetForm.name"
+                                name="name"
+                                placeholder="e.g. Dell Latitude 5420">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="asset_type">
+                                Asset Type
+                            </label>
+
+                            <select
+                                id="asset_type"
+                                [(ngModel)]="assetForm.asset_type"
+                                name="asset_type">
+
+                                <option value="">
+                                    Select asset type
+                                </option>
+
+                                <option value="Laptop">
+                                    Laptop
+                                </option>
+
+                                <option value="Desktop">
+                                    Desktop
+                                </option>
+
+                                <option value="Monitor">
+                                    Monitor
+                                </option>
+
+                                <option value="Printer">
+                                    Printer
+                                </option>
+
+                                <option value="Mobile">
+                                    Mobile
+                                </option>
+
+                                <option value="Network Equipment">
+                                    Network Equipment
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="serial_number">
+                                Serial Number
+                            </label>
+
+                            <input
+                                id="serial_number"
+                                type="text"
+                                [(ngModel)]="assetForm.serial_number"
+                                name="serial_number"
+                                placeholder="e.g. DELL-LAT-002">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="brand">
+                                Brand
+                            </label>
+
+                            <input
+                                id="brand"
+                                type="text"
+                                [(ngModel)]="assetForm.brand"
+                                name="brand"
+                                placeholder="e.g. Dell">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="model">
+                                Model
+                            </label>
+
+                            <input
+                                id="model"
+                                type="text"
+                                [(ngModel)]="assetForm.model"
+                                name="model"
+                                placeholder="e.g. Latitude 5420">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="status">
+                                Status
+                            </label>
+
+                            <select
+                                id="status"
+                                [(ngModel)]="assetForm.status"
+                                name="status">
+
+                                <option value="AVAILABLE">
+                                    Available
+                                </option>
+
+                                <option value="ASSIGNED">
+                                    Assigned
+                                </option>
+
+                                <option value="MAINTENANCE">
+                                    Maintenance
+                                </option>
+
+                                <option value="RETIRED">
+                                    Retired
+                                </option>
+
+                                <option value="LOST">
+                                    Lost
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="department">
+                                Department
+                            </label>
+
+                            <input
+                                id="department"
+                                type="text"
+                                [(ngModel)]="assetForm.department"
+                                name="department"
+                                placeholder="e.g. IT">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="purchase_date">
+                                Purchase Date
+                            </label>
+
+                            <input
+                                id="purchase_date"
+                                type="date"
+                                [(ngModel)]="assetForm.purchase_date"
+                                name="purchase_date">
+
+                        </div>
+
+                        <div class="form-group full-width">
+
+                            <label for="notes">
+                                Notes
+                            </label>
+
+                            <textarea
+                                id="notes"
+                                [(ngModel)]="assetForm.notes"
+                                name="notes"
+                                rows="4"
+                                placeholder="Additional information about this asset">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="cancel-button"
+                            (click)="closeAddForm()">
+
+                            Cancel
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="save-button">
+
+                            Save Asset
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    }
+
+    @if (showAssignForm) {
+
+        <div class="form-overlay">
+
+            <div class="asset-form">
+
+                <div class="form-header">
+
+                    <div>
+
+                        <h2>Assign Asset</h2>
+
+                        @if (selectedAsset) {
+
+                            <p>
+                                Assign
+                                <strong>
+                                    {{ selectedAsset.asset_tag }}
+                                </strong>
+                                -
+                                {{ selectedAsset.name }}
+                            </p>
+
+                        }
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="close-button"
+                        (click)="closeAssignForm()">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                <form
+                    (ngSubmit)="assignAsset()">
+
+                    <div class="form-group">
+
+                        <label for="assignedUser">
+                            Assign To
+                        </label>
+
+                        <select
+                            id="assignedUser"
+                            [(ngModel)]="selectedUserId"
+                            name="assignedUser"
+                            required>
+
+                            <option
+                                [ngValue]="null">
+
+                                Select employee
+
+                            </option>
+
+                            @for (
+                                user of users;
+                                track user.id
+                            ) {
+
+                                <option
+                                    [ngValue]="user.id">
+
+                                    {{ user.full_name }}
+
+                                    -
+                                    {{ user.department || 'No department' }}
+
+                                </option>
+
+                            }
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="cancel-button"
+                            (click)="closeAssignForm()">
+
+                            Cancel
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="save-button"
+                            [disabled]="!selectedUserId">
+
+                            Assign Asset
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    }
+
+    @if (showEditForm) {
+
+        <div class="form-overlay">
+
+            <div class="asset-form">
+
+                <div class="form-header">
+
+                    <div>
+                        <h2>Edit Asset</h2>
+
+                        <p>
+                            Update asset information.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="close-button"
+                        (click)="closeEditForm()">
+
+                        <i class="fa-solid fa-xmark"></i>
+
+                    </button>
+
+                </div>
+
+                <form
+                    (ngSubmit)="updateAsset()">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="edit-name">
+                                Asset Name
+                            </label>
+
+                            <input
+                                id="edit-name"
+                                type="text"
+                                [(ngModel)]="assetForm.name"
+                                name="edit-name"
+                                required>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-type">
+                                Asset Type
+                            </label>
+
+                            <select
+                                id="edit-type"
+                                [(ngModel)]="assetForm.asset_type"
+                                name="edit-type"
+                                required>
+
+                                <option value="">
+                                    Select asset type
+                                </option>
+
+                                <option value="Laptop">
+                                    Laptop
+                                </option>
+
+                                <option value="Desktop">
+                                    Desktop
+                                </option>
+
+                                <option value="Monitor">
+                                    Monitor
+                                </option>
+
+                                <option value="Printer">
+                                    Printer
+                                </option>
+
+                                <option value="Mobile">
+                                    Mobile
+                                </option>
+
+                                <option value="Network Equipment">
+                                    Network Equipment
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-serial">
+                                Serial Number
+                            </label>
+
+                            <input
+                                id="edit-serial"
+                                type="text"
+                                [(ngModel)]="assetForm.serial_number"
+                                name="edit-serial">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-brand">
+                                Brand
+                            </label>
+
+                            <input
+                                id="edit-brand"
+                                type="text"
+                                [(ngModel)]="assetForm.brand"
+                                name="edit-brand">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-model">
+                                Model
+                            </label>
+
+                            <input
+                                id="edit-model"
+                                type="text"
+                                [(ngModel)]="assetForm.model"
+                                name="edit-model">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-status">
+                                Status
+                            </label>
+
+                            <select
+                                id="edit-status"
+                                [(ngModel)]="assetForm.status"
+                                name="edit-status"
+                                required>
+
+                                <option value="AVAILABLE">
+                                    Available
+                                </option>
+
+                                <option value="ASSIGNED">
+                                    Assigned
+                                </option>
+
+                                <option value="MAINTENANCE">
+                                    Maintenance
+                                </option>
+
+                                <option value="RETIRED">
+                                    Retired
+                                </option>
+
+                                <option value="LOST">
+                                    Lost
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-department">
+                                Department
+                            </label>
+
+                            <input
+                                id="edit-department"
+                                type="text"
+                                [(ngModel)]="assetForm.department"
+                                name="edit-department">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="edit-date">
+                                Purchase Date
+                            </label>
+
+                            <input
+                                id="edit-date"
+                                type="date"
+                                [(ngModel)]="assetForm.purchase_date"
+                                name="edit-date">
+
+                        </div>
+
+                        <div class="form-group full-width">
+
+                            <label for="edit-notes">
+                                Notes
+                            </label>
+
+                            <textarea
+                                id="edit-notes"
+                                [(ngModel)]="assetForm.notes"
+                                name="edit-notes"
+                                rows="4">
+                            </textarea>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="button"
+                            class="cancel-button"
+                            (click)="closeEditForm()">
+
+                            Cancel
+
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="save-button">
+
+                            Update Asset
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    }
+</div>

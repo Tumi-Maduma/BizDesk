@@ -42,4 +42,11 @@ export class UserService {
 
     }
 
+    getAssetUsers() {
+
+        return this.http.get<any[]>(
+            'http://localhost:3000/api/users/asset-users'
+        );
+    }
+
 }
